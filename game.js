@@ -2,6 +2,7 @@ var userClickedPattern = []; // Stores user clicks
 var gamePattern = []; // Stores first pattern
 var buttonColours = ["red", "blue", "green", "yellow"];
 var level = 0; // Initialize level at 0
+var started = false;
 
 
 function nextSequence() {
@@ -27,6 +28,9 @@ $(".btn").on("click", function () {
 
     playSound(userChosenColour); // Play sound for user selected button
     animatePress(userChosenColour); // Animate user selected button
+
+    checkAnswer(userClickedPattern.length - 1); // Call checkAnswer() after a user clicks a button by passing the last index to checkAnswer
+
 });
 
 // function to play sound
@@ -47,9 +51,46 @@ function animatePress(currentColour) {
 // Start the game when a key is pressed
 $(document).on("keydown", function () {
     if (level === 0) { // Only start if level is 0
-        nextSequence();
+        started = true; // Update started state
+        userClickedPattern = []; // Reset user clicks
+        nextSequence(); // Restart game
+
     }
 });
 
+
+function checkAnswer(currentLevel) {
+    // Check if the user's most recent answer matches the game's pattern
+    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
+        console.log("success");
+
+        // Check if the user has completed the sequence
+        if (userClickedPattern.length === gamePattern.length) {
+            setTimeout(function () {
+                nextSequence(); // Start next level after 1000ms
+                userClickedPattern = []; // Reset user pattern for the next level
+            }, 1000);
+        }
+    } else {
+        console.log("wrong"); // If the answer is incorrect
+        var audio = new Audio(`sounds/wrong.mp3`); // Play sounf if wrong
+        audio.play();
+
+        $("body").addClass("game-over");
+        setTimeout(function () {
+            $("body").removeClass("game-over"); // Remove class after 200ms
+        }, 100);
+
+        $("h1").text("Game Over, Press Any Key to Restart"); //Change heading
+
+        startOver();
+    }
+}
+
+function startOver() {
+    level = 0; // Reset level
+    gamePattern = []; // Clear game pattern
+    started = false; // Reset game state
+}
 
 
