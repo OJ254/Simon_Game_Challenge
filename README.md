@@ -19,7 +19,7 @@ This project is a **Simon Game**, a classic memory game where the player repeats
 
 ### **1. Download or clone the repository**  
 ```bash
-git clone <repository_url>
+git clone git@github.com:OJ254/Simon_Game_Challenge.git
 cd <project_folder>
 ```
 
